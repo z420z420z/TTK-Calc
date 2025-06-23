@@ -13,31 +13,32 @@
       background-color: #1c1c1c;
       padding: 20px;
       border-radius: 10px;
-      width: 320px;
+      width: 340px;
     }
     label {
       display: block;
       margin-top: 10px;
       font-size: 14px;
     }
-    .horizontal {
+    .row {
       display: flex;
       gap: 10px;
-      align-items: flex-start;
       margin-top: 10px;
     }
-    .horizontal > div {
+    .row > div {
       flex: 1;
+      display: flex;
+      flex-direction: column;
     }
     input {
-      width: 100%;
       padding: 8px;
-      margin-top: 4px;
       background-color: #2a2a2a;
       border: 1px solid #444;
       color: white;
       border-radius: 5px;
       font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
     }
     button {
       margin-top: 20px;
@@ -60,11 +61,48 @@
 <body>
 
   <div class="box">
-    <div class="horizontal">
+    <div class="row">
       <div>
-        <label>Damage:</label>
+        <label for="dmg">Damage:</label>
         <input type="number" id="dmg" step="0.01" />
       </div>
-      <div style="width: 90px;">
-        <label>Multiplier:</label>
-        <input type="number" id="m
+      <div>
+        <label for="multiplier">Multiplier:</label>
+        <input type="number" id="multiplier" step="0.01" value="1" min="0" />
+      </div>
+    </div>
+
+    <label for="rpm">RPM:</label>
+    <input type="number" id="rpm" />
+
+    <label for="hp">HP:</label>
+    <input type="number" id="hp" value="100" />
+
+    <button onclick="calcTTK()">Calculate TTK</button>
+
+    <div id="result">TTK: --</div>
+  </div>
+
+  <script>
+    function calcTTK() {
+      const dmg = parseFloat(document.getElementById('dmg').value);
+      const multiplier = parseFloat(document.getElementById('multiplier').value);
+      const rpm = parseFloat(document.getElementById('rpm').value);
+      const hp = parseFloat(document.getElementById('hp').value);
+
+      if (!dmg || !rpm || !hp || dmg <= 0 || rpm <= 0 || hp <= 0 || !multiplier || multiplier < 0) {
+        document.getElementById('result').innerText = "TTK: invalid input";
+        return;
+      }
+
+      const effectiveDmg = dmg * multiplier;
+      const shots = Math.ceil(hp / effectiveDmg);
+      const tbs = 60 / rpm;
+      const ttk = (shots - 1) * tbs;
+
+      document.getElementById('result').innerText = `TTK: ${ttk.toFixed(3)} seconds`;
+    }
+  </script>
+
+</body>
+</html>
