@@ -50,16 +50,31 @@
       box-sizing: border-box;
     }
 
-    button {
+    .button-row {
+      display: flex;
       margin-top: 20px;
-      padding: 10px;
       width: 100%;
+    }
+
+    .button-row button {
+      flex: 1;
       background-color: #444;
       color: white;
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      border-radius: 5px 0 0 5px;
       font-size: 16px;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .button-row select {
+      width: 80px;
+      border-radius: 0 5px 5px 0;
+      border-left: 1px solid #333;
+      font-size: 16px;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
     }
 
     #result {
@@ -90,13 +105,13 @@
       <label for="hp">HP:</label>
       <input type="number" id="hp" value="100" />
 
-      <label for="unit">Output unit:</label>
-      <select id="unit">
-        <option value="s">Seconds</option>
-        <option value="ms">Milliseconds</option>
-      </select>
-
-      <button type="submit">Calculate TTK</button>
+      <div class="button-row">
+        <button type="submit">Calculate TTK</button>
+        <select id="unit">
+          <option value="s">sec</option>
+          <option value="ms">ms</option>
+        </select>
+      </div>
 
       <div id="result">TTK: --</div>
     </form>
@@ -124,7 +139,7 @@
       if (unit === "ms") {
         display = `${(ttkSeconds * 1000).toFixed(1)} ms`;
       } else {
-        display = `${ttkSeconds.toFixed(3)} seconds`;
+        display = `${ttkSeconds.toFixed(3)} sec`;
       }
 
       document.getElementById('result').innerText = `TTK: ${display}`;
