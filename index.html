@@ -95,7 +95,7 @@
         </div>
         <div>
           <label for="multiplier">Multiplier:</label>
-          <input type="text" id="multiplier" value="1x" />
+          <input type="text" id="multiplier" value="1x" autocomplete="off" />
         </div>
       </div>
 
@@ -118,45 +118,69 @@
   </div>
 
   <script>
-    // Ensure multiplier always ends with 'x' and only numbers before it
-    const multiplierInput = document.getElementById('multiplier');
+    const multiplierInput = document.getElementById('multiplier')
 
-    multiplierInput.addEventListener('input', () => {
-      // Remove all non-digit and non-dot characters, then append 'x'
-      let val = multiplierInput.value;
-      val = val.replace(/[^0-9.]/g, ''); // keep only digits and dot
-      if (val === '') val = '1'; // default to 1 if empty
-      multiplierInput.value = val + 'x';
-    });
+    multiplierInput.addEventListener('input', function() {
+      let val = multiplierInput.value
+      if (val.endsWith('x')) {
+        val = val.slice(0, -1).replace(/[^0-9.]/g, '') + 'x'
+      } else {
+        val = val.replace(/[^0-9.]/g, '') + 'x'
+      }
+      if (val === 'x') val = '1x'
+      multiplierInput.value = val
+    })
+
+    multiplierInput.addEventListener('keydown', function(e) {
+      const val = multiplierInput.value
+      const cursorPos = multiplierInput.selectionStart
+
+      if ((e.key === 'Backspace' && cursorPos === val.length) || (e.key === 'Delete' && cursorPos === val.length - 1)) {
+        e.preventDefault()
+
+        let beforeX = val.slice(0, val.length - 1)
+
+        if (e.key === 'Backspace') {
+          beforeX = beforeX.slice(0, beforeX.length - 1)
+        } else if (e.key === 'Delete') {
+          beforeX = beforeX.slice(1)
+        }
+
+        multiplierInput.value = beforeX + 'x'
+        multiplierInput.setSelectionRange(beforeX.length, beforeX.length)
+      }
+
+      if (cursorPos > val.length - 1 && (e.key === 'ArrowRight' || e.key === 'Delete')) {
+        e.preventDefault()
+      }
+    })
 
     function calcTTK() {
-      const dmg = parseFloat(document.getElementById('dmg').value);
-      // Remove 'x' from multiplier value and parse number
-      const multiplierStr = multiplierInput.value.replace('x', '');
-      const multiplier = parseFloat(multiplierStr);
-
-      const rpm = parseFloat(document.getElementById('rpm').value);
-      const hp = parseFloat(document.getElementById('hp').value);
-      const unit = document.getElementById('unit').value;
+      const dmg = parseFloat(document.getElementById('dmg').value)
+      const multiplierStr = multiplierInput.value.replace('x', '')
+      const multiplier = parseFloat(multiplierStr)
+      const rpm = parseFloat(document.getElementById('rpm').value)
+      const hp = parseFloat(document.getElementById('hp').value)
+      const unit = document.getElementById('unit').value
 
       if (!dmg || !rpm || !hp || dmg <= 0 || rpm <= 0 || hp <= 0 || !multiplier || multiplier < 0) {
-        document.getElementById('result').innerText = "TTK: invalid input";
-        return;
+        document.getElementById('result').innerText = 'TTK: invalid input'
+        return
       }
 
-      const effectiveDmg = dmg * multiplier;
-      const shots = Math.ceil(hp / effectiveDmg);
-      const tbs = 60 / rpm;
-      const ttkSeconds = (shots - 1) * tbs;
+      const effectiveDmg = dmg * multiplier
+      const shots = Math.ceil(hp / effectiveDmg)
+      const tbs = 60 / rpm
+      const ttkSeconds = (shots - 1) * tbs
 
-      let display;
-      if (unit === "ms") {
-        display = `${(ttkSeconds * 1000).toFixed(1)} ms`;
+      let display
+      if (unit === 'ms') {
+        display = (ttkSeconds * 1000).toFixed(1) + ' ms'
       } else {
-        display = `${ttkSeconds.toFixed(3)} sec`;
+        display = ttkSeconds.toFixed(3) + ' sec'
       }
 
-      document.getElementById('result').innerText = `TTK: ${display}`;
+      document.getElementById('result').innerText = 'TTK: ' + display
     }
   </script>
 
