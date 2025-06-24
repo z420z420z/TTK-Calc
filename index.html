@@ -50,6 +50,12 @@
       box-sizing: border-box;
     }
 
+    
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button {
+      filter: invert(70%);
+    }
+
     .button-row {
       display: flex;
       margin-top: 20px;
@@ -82,6 +88,23 @@
       font-size: 18px;
       font-weight: bold;
     }
+
+    .multiplier-wrapper {
+      position: relative;
+    }
+
+    .multiplier-wrapper input {
+      padding-right: 24px;
+    }
+
+    .multiplier-wrapper span {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -94,13 +117,12 @@
           <input type="number" id="dmg" step="0.01" />
         </div>
         <div>
-  <label for="multiplier">Multiplier:</label>
-  <div style="position: relative;">
-    <input type="number" id="multiplier" step="0.01" value="1" min="0" style="padding-right: 20px;" />
-    <span style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #888;">×</span>
-  </div>
-</div>
-
+          <label for="multiplier">Multiplier:</label>
+          <div class="multiplier-wrapper">
+            <input type="number" id="multiplier" step="0.01" value="1" min="0" />
+            <span>×</span>
+          </div>
+        </div>
       </div>
 
       <label for="rpm">RPM:</label>
