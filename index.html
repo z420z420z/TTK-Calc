@@ -50,12 +50,6 @@
       box-sizing: border-box;
     }
 
-    
-    input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button {
-      filter: invert(70%);
-    }
-
     .button-row {
       display: flex;
       margin-top: 20px;
@@ -88,23 +82,6 @@
       font-size: 18px;
       font-weight: bold;
     }
-
-    .multiplier-wrapper {
-      position: relative;
-    }
-
-    .multiplier-wrapper input {
-      padding-right: 24px;
-    }
-
-    .multiplier-wrapper span {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #888;
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
@@ -118,10 +95,7 @@
         </div>
         <div>
           <label for="multiplier">Multiplier:</label>
-          <div class="multiplier-wrapper">
-            <input type="number" id="multiplier" step="0.01" value="1" min="0" />
-            <span>×</span>
-          </div>
+          <input type="text" id="multiplier" value="1x" />
         </div>
       </div>
 
@@ -144,9 +118,23 @@
   </div>
 
   <script>
+    // Ensure multiplier always ends with 'x' and only numbers before it
+    const multiplierInput = document.getElementById('multiplier');
+
+    multiplierInput.addEventListener('input', () => {
+      // Remove all non-digit and non-dot characters, then append 'x'
+      let val = multiplierInput.value;
+      val = val.replace(/[^0-9.]/g, ''); // keep only digits and dot
+      if (val === '') val = '1'; // default to 1 if empty
+      multiplierInput.value = val + 'x';
+    });
+
     function calcTTK() {
       const dmg = parseFloat(document.getElementById('dmg').value);
-      const multiplier = parseFloat(document.getElementById('multiplier').value);
+      // Remove 'x' from multiplier value and parse number
+      const multiplierStr = multiplierInput.value.replace('x', '');
+      const multiplier = parseFloat(multiplierStr);
+
       const rpm = parseFloat(document.getElementById('rpm').value);
       const hp = parseFloat(document.getElementById('hp').value);
       const unit = document.getElementById('unit').value;
